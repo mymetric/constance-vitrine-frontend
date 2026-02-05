@@ -15,13 +15,13 @@ Na página de produto, adicione o elemento onde a vitrine será renderizada:
 ### 2. Inclua o script via jsDelivr
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/mymetric/constance-vitrine@main/frontend/vitrine.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mymetric/constance-vitrine-frontend@main/vitrine.js"></script>
 ```
 
 Para usar uma versão específica (recomendado em produção):
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/mymetric/constance-vitrine@6eb04ee/frontend/vitrine.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mymetric/constance-vitrine-frontend@27dfe2c/vitrine.js"></script>
 ```
 
 ## Requisitos
@@ -133,7 +133,7 @@ Para testar diferentes configurações de pesos, modifique o objeto `weights` an
     }
   };
 </script>
-<script src="https://cdn.jsdelivr.net/gh/mymetric/constance-vitrine@main/frontend/vitrine.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mymetric/constance-vitrine-frontend@main/vitrine.js"></script>
 ```
 
 ## Troubleshooting
