@@ -1,8 +1,8 @@
 (function() {
   'use strict';
 
-  // Configurações
-  const CONFIG = {
+  // Configurações padrão
+  const DEFAULTS = {
     apiUrl: 'https://constance-vitrine-production.up.railway.app/api/v1/recommendations/',
     containerId: 'vitrine-recomendacoes',
     limit: 10,
@@ -13,9 +13,19 @@
       similarity: 0.25,
       history: 0.15
     },
-    // Chave do localStorage para histórico de navegação
     historyKey: 'vitrine_nav_history',
     maxHistoryItems: 20
+  };
+
+  // Mescla configurações externas (window.VITRINE_CONFIG) com defaults
+  const EXT = window.VITRINE_CONFIG || {};
+  const CONFIG = {
+    ...DEFAULTS,
+    ...EXT,
+    weights: {
+      ...DEFAULTS.weights,
+      ...(EXT.weights || {})
+    }
   };
 
   // Pega o product_id do dataLayer

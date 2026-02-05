@@ -61,35 +61,6 @@ dataLayer.push({
 });
 ```
 
-## Configuração
-
-Para customizar o comportamento, edite as constantes no início do script:
-
-```javascript
-const CONFIG = {
-  // URL da API de recomendações
-  apiUrl: 'https://constance-vitrine-production.up.railway.app/api/v1/recommendations/',
-
-  // ID do elemento container
-  containerId: 'vitrine-recomendacoes',
-
-  // Quantidade de produtos a exibir
-  limit: 10,
-
-  // Pesos do algoritmo (para A/B testing)
-  weights: {
-    grade: 0.25,      // Disponibilidade/estoque
-    shipping: 0.15,   // Custo de frete
-    discount: 0.20,   // Desconto
-    similarity: 0.25, // Similaridade textual
-    history: 0.15     // Histórico de navegação
-  },
-
-  // Máximo de itens no histórico
-  maxHistoryItems: 20
-};
-```
-
 ## Funcionalidades
 
 - **Histórico de navegação**: Salva os últimos produtos visualizados no localStorage
@@ -117,23 +88,47 @@ Os estilos são injetados com a classe `.vitrine-*`. Para sobrescrever, use CSS 
 }
 ```
 
-## A/B Testing
+## Configuração via Frontend
 
-Para testar diferentes configurações de pesos, modifique o objeto `weights` antes de carregar o script:
+Os pesos são passados pelo frontend via `window.VITRINE_CONFIG`. Defina **antes** de carregar o script:
 
 ```html
 <script>
   window.VITRINE_CONFIG = {
+    // Quantidade de produtos
+    limit: 12,
+
+    // Pesos do algoritmo (devem somar ~1.0)
     weights: {
-      grade: 0.35,
-      shipping: 0.10,
-      discount: 0.30,
-      similarity: 0.15,
-      history: 0.10
+      grade: 0.25,      // Disponibilidade/estoque
+      shipping: 0.15,   // Custo de frete
+      discount: 0.20,   // Desconto
+      similarity: 0.25, // Similaridade textual
+      history: 0.15     // Histórico de navegação
     }
   };
 </script>
 <script src="https://cdn.jsdelivr.net/gh/mymetric/constance-vitrine-frontend@main/vitrine.js"></script>
+```
+
+### A/B Testing
+
+**Variante A** - Foco em conversão (desconto + disponibilidade):
+```html
+<script>
+  window.VITRINE_CONFIG = {
+    weights: { grade: 0.35, shipping: 0.10, discount: 0.30, similarity: 0.15, history: 0.10 }
+  };
+</script>
+```
+
+**Variante B** - Foco em relevância (similaridade + histórico):
+```html
+<script>
+  window.VITRINE_CONFIG = {
+    weights: { grade: 0.15, shipping: 0.10, discount: 0.15, similarity: 0.35, history: 0.25 }
+  };
+</script>
 ```
 
 ## Troubleshooting
