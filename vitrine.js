@@ -311,6 +311,11 @@
     if (data) {
       renderRecommendations(data);
     }
+
+    // Chama callback se definido
+    if (typeof CONFIG.onLoad === 'function') {
+      CONFIG.onLoad(data);
+    }
   }
 
   // Aguarda DOM e dataLayer
