@@ -28,12 +28,20 @@
     }
   };
 
-  // Pega o product_id do dataLayer
-  function getProductIdFromDataLayer() {
+  // Pega o product_id do dataLayer ou config
+  function getProductId() {
+    // Se passou direto no config, usa
+    if (CONFIG.productId) {
+      console.log('[Vitrine] product_id do config:', CONFIG.productId);
+      return CONFIG.productId;
+    }
+
     if (typeof dataLayer === 'undefined') {
       console.warn('[Vitrine] dataLayer não encontrado');
       return null;
     }
+
+    console.log('[Vitrine] Buscando product_id no dataLayer...', dataLayer);
 
     // Procura o evento de pageview ou produto no dataLayer
     for (let i = dataLayer.length - 1; i >= 0; i--) {
@@ -41,15 +49,19 @@
 
       // Tenta diferentes estruturas comuns do dataLayer
       if (item.ecommerce?.detail?.products?.[0]?.id) {
+        console.log('[Vitrine] Encontrado em ecommerce.detail.products:', item.ecommerce.detail.products[0].id);
         return item.ecommerce.detail.products[0].id;
       }
       if (item.ecommerce?.items?.[0]?.item_id) {
+        console.log('[Vitrine] Encontrado em ecommerce.items:', item.ecommerce.items[0].item_id);
         return item.ecommerce.items[0].item_id;
       }
       if (item.productId) {
+        console.log('[Vitrine] Encontrado productId:', item.productId);
         return item.productId;
       }
       if (item.product_id) {
+        console.log('[Vitrine] Encontrado product_id:', item.product_id);
         return item.product_id;
       }
     }
@@ -120,6 +132,19 @@
     }
   }
 
+  // Remove UTM parameters da URL
+  function cleanUrl(url) {
+    if (!url) return '';
+    try {
+      const u = new URL(url);
+      const paramsToRemove = [...u.searchParams.keys()].filter(k => k.startsWith('utm_'));
+      paramsToRemove.forEach(k => u.searchParams.delete(k));
+      return u.toString();
+    } catch (e) {
+      return url;
+    }
+  }
+
   // Formata preço em BRL
   function formatPrice(price) {
     return new Intl.NumberFormat('pt-BR', {
@@ -157,7 +182,7 @@
             const finalPrice = product.sale_price || product.price;
 
             return `
-              <a href="${product.link}" class="vitrine-item" data-product-id="${product.id}">
+              <a href="${cleanUrl(product.link)}" class="vitrine-item" data-product-id="${product.id}">
                 ${discount > 0 ? `<span class="vitrine-badge">-${discount}%</span>` : ''}
                 <img src="${product.image_url}" alt="${product.title}" class="vitrine-image" loading="lazy">
                 <div class="vitrine-info">
@@ -293,8 +318,13 @@
 
   // Inicializa a vitrine
   async function init() {
-    const productId = getProductIdFromDataLayer();
-    if (!productId) return;
+    console.log('[Vitrine] Inicializando...');
+    const productId = getProductId();
+    if (!productId) {
+      console.warn('[Vitrine] Abortando: sem product_id');
+      return;
+    }
+    console.log('[Vitrine] product_id:', productId);
 
     // Adiciona ao histórico
     addToNavigationHistory(productId);
