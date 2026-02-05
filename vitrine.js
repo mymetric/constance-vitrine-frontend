@@ -304,6 +304,10 @@
 
     // Busca e renderiza recomendações
     const data = await fetchRecommendations(productId);
+
+    // Salva resultado em window para acesso externo
+    window.VITRINE_RESULT = data;
+
     if (data) {
       renderRecommendations(data);
     }
